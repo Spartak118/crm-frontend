@@ -83,7 +83,7 @@ const Customers = () => {
       })
       .catch(() => {})
       .finally(() => setApiLoading(false));
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []); // eslint-disable-line 
 
   // Combined list: localStorage first, then API-only entries (no duplicate emails)
   const mergedCustomers = [...customers, ...apiCustomers];
