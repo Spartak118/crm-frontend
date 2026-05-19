@@ -1,0 +1,104 @@
+.logo-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;           /* Уменьшено с 1rem до 0.5rem */
+}
+
+.logo-container {
+  width: 110px;
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 24px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.logo-container:hover {
+  transform: scale(1.1);
+}
+
+.logo-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;      /* Немного уменьшено */
+}
+
+.logo-name {
+  font-size: 1.3rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 1px;
+  font-family: 'Orbitron', sans-serif;
+}
+
+.logo-crm {
+  font-size: 0.7rem;
+  color: var(--placeholder-color);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-top: 0.1rem;
+}
+
+/* Планшеты */
+@media (max-width: 1024px) {
+  .logo-wrapper {
+    gap: 0.4rem;        /* Меньше на планшете */
+  }
+  
+  .logo-container {
+    width: 90px;
+    height: 90px;
+  }
+}
+
+/* Мобильная версия */
+@media (max-width: 768px) {
+  .logo-wrapper {
+    gap: 0.3rem;        /* Еще меньше на мобильных */
+  }
+  
+  .logo-container {
+    width: 75px;
+    height: 75px;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-wrapper {
+    gap: 0.2rem;        /* Минимальное расстояние */
+  }
+  
+  .logo-container {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .logo-name {
+    font-size: 1.2rem;
+  }
+  
+  .logo-crm {
+    font-size: 0.65rem;
+  }
+}
+
+/* Добавь в конец файла */
+@media (max-width: 768px) {
+  .logo-text {
+    display: none !important;
+  }
+  
+  .logo-wrapper {
+    gap: 0 !important;
+  }
+}

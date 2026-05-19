@@ -1,0 +1,216 @@
+.condition-builder {
+  background: var(--card-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+/* Conditions List */
+.conditions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.condition-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  background: var(--hover-bg);
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  transition: all 0.2s;
+}
+
+.condition-row:hover {
+  border-color: var(--primary-color);
+  background: var(--card-bg);
+}
+
+.condition-fields {
+  flex: 1;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.condition-field,
+.condition-operator,
+.condition-value {
+  padding: 0.5rem;
+  border: 2px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--input-bg);
+  color: var(--text-color);
+  font-size: 0.9rem;
+}
+
+.condition-field {
+  width: 140px;
+}
+
+.condition-operator {
+  width: 140px;
+}
+
+.condition-value {
+  flex: 1;
+}
+
+.condition-field:focus,
+.condition-operator:focus,
+.condition-value:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.remove-condition {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--placeholder-color);
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.remove-condition:hover {
+  background: #f56565;
+  color: white;
+}
+
+/* Add Condition Button */
+.add-condition-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem;
+  width: 100%;
+  border: 2px dashed var(--border-color);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--placeholder-color);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 1rem;
+}
+
+.add-condition-btn:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  background: var(--hover-bg);
+}
+
+.plus-icon {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+/* Add Condition Form */
+.add-condition {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: var(--hover-bg);
+  border-radius: 8px;
+  border: 2px solid var(--primary-color);
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.add-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.btn-primary.small,
+.btn-secondary.small {
+  padding: 0.4rem 1rem;
+  font-size: 0.85rem;
+}
+
+.btn-primary.small:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Logical Operator */
+.logical-operator {
+  margin-top: 1rem;
+  padding: 0.8rem;
+  background: var(--hover-bg);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-left: 4px solid #fbbf24;
+}
+
+.operator-badge {
+  font-size: 0.85rem;
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+.change-operator {
+  padding: 0.3rem 0.8rem;
+  border: 2px solid var(--border-color);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-color);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.change-operator:hover {
+  border-color: var(--primary-color);
+  background: var(--card-bg);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .condition-row {
+    flex-direction: column;
+  }
+
+  .condition-fields {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .condition-field,
+  .condition-operator,
+  .condition-value {
+    width: 100%;
+  }
+
+  .logical-operator {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+
+  .add-condition .condition-fields {
+    flex-direction: column;
+  }
+}

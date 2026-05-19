@@ -1,0 +1,274 @@
+.clock-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+/* QuantumCRM - большой и отдельно */
+.quantum-brand {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  margin-right: 0.5rem;
+}
+
+.quantum-name {
+  font-size: 1.8rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-family: 'Orbitron', sans-serif;
+}
+
+.quantum-crm {
+  font-size: 1rem;
+  font-weight: 400;
+  color: rgba(102, 126, 234, 0.7);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  margin-top: 0.2rem;
+}
+
+/* Часы - маленькие в своей коробке */
+.clock-box {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+  padding: 0.3rem 1rem;
+  border-radius: 30px;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+.clock-display {
+  position: relative;
+  min-width: 130px;
+}
+
+.clock-digits {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.05rem;
+  font-family: 'Orbitron', 'Courier New', monospace;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #00f3ff;
+  text-shadow: 
+    0 0 5px #00f3ff,
+    0 0 10px #00f3ff;
+}
+
+.ampm {
+  font-size: 0.55rem;
+  margin-left: 0.1rem;
+  color: #ff00ff;
+  text-shadow: 0 0 5px #ff00ff;
+}
+
+.digit-group {
+  display: flex;
+  gap: 0.02rem;
+}
+
+.digit {
+  background: rgba(0, 243, 255, 0.05);
+  padding: 0.02rem 0.1rem;
+  border-radius: 2px;
+  min-width: 0.7rem;
+  text-align: center;
+  font-size: 1rem;
+}
+
+.seconds-group .digit {
+  color: #ff00ff;
+  text-shadow: 0 0 5px #ff00ff;
+}
+
+.colon {
+  margin: 0 0.05rem;
+  color: #00f3ff;
+  font-size: 1rem;
+  animation: colonBlink 1s infinite;
+}
+
+@keyframes colonBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.clock-date {
+  font-size: 0.5rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 0.1rem;
+  font-family: 'Orbitron', monospace;
+}
+
+/* Контролы часов */
+.clock-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hour-format-toggle {
+  display: flex;
+  gap: 0.1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+  padding: 0.1rem;
+  border: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+.format-btn {
+  padding: 0.15rem 0.4rem;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.6rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 20px;
+  transition: all 0.2s;
+}
+
+.format-btn.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.timezone-selector {
+  position: relative;
+}
+
+.timezone-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.15rem 0.4rem;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 30px;
+  color: white;
+  cursor: pointer;
+  font-size: 0.6rem;
+  height: 22px;
+}
+
+.timezone-icon {
+  font-size: 0.7rem;
+  animation: spin 10s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.timezone-label {
+  max-width: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dropdown-arrow {
+  font-size: 0.5rem;
+  opacity: 0.5;
+}
+
+/* Выпадающий список */
+.timezone-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.2rem;
+  background: rgba(10, 10, 20, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 6px;
+  overflow: hidden;
+  z-index: 1000;
+  min-width: 140px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.timezone-option {
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  border: none;
+  background: transparent;
+  color: white;
+  text-align: left;
+  cursor: pointer;
+  font-size: 0.65rem;
+}
+
+.timezone-option:hover {
+  background: rgba(102, 126, 234, 0.2);
+}
+
+.timezone-option.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Мобильная версия */
+@media (max-width: 1024px) {
+  .clock-wrapper {
+    gap: 1rem;
+  }
+
+  .quantum-name {
+    font-size: 1.4rem;
+  }
+
+  .quantum-crm {
+    font-size: 0.8rem;
+  }
+
+  .clock-box {
+    padding: 0.2rem 0.8rem;
+  }
+
+  .clock-digits {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .clock-wrapper {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .quantum-brand {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 0.3rem;
+  }
+
+  .quantum-name {
+    font-size: 1.2rem;
+  }
+
+  .quantum-crm {
+    font-size: 0.7rem;
+  }
+
+  .clock-box {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .clock-controls {
+    flex: 1;
+    justify-content: flex-end;
+  }
+}

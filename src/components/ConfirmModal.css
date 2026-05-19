@@ -1,0 +1,188 @@
+/* Overlay - затемняет фон */
+.confirm-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  backdrop-filter: blur(5px);
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Контейнер для центрирования */
+.confirm-modal-container {
+  width: 90%;
+  max-width: 400px;
+  animation: slideIn 0.3s ease-out;
+}
+
+/* Основное содержание модального окна */
+.confirm-modal-content {
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-color);
+  text-align: center;
+}
+
+/* Иконка */
+.confirm-modal-icon {
+  margin-bottom: 1.5rem;
+}
+
+.warning-icon {
+  font-size: 3.5rem;
+  display: inline-block;
+  animation: pulse 2s infinite;
+}
+
+/* Заголовок */
+.confirm-modal-title {
+  margin: 0 0 1rem 0;
+  color: var(--text-color);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+/* Сообщение */
+.confirm-modal-message {
+  margin: 0 0 2rem 0;
+  color: var(--text-color);
+  opacity: 0.8;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* Контейнер для кнопок */
+.confirm-modal-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+/* Базовый стиль кнопок */
+.confirm-modal-btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 120px;
+}
+
+/* Кнопка Cancel */
+.cancel-btn {
+  background: transparent;
+  color: var(--text-color);
+  border: 2px solid var(--border-color);
+}
+
+.cancel-btn:hover {
+  background: var(--hover-bg);
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
+}
+
+/* Кнопка Confirm (Delete) */
+.confirm-btn {
+  background: #dc3545;
+  color: white;
+  border: 2px solid #dc3545;
+}
+
+.confirm-btn:hover {
+  background: #c82333;
+  border-color: #c82333;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+}
+
+/* Анимации */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Темная тема */
+.dark-mode .confirm-modal-content {
+  background: #2d2d2d;
+  border-color: #404040;
+}
+
+.dark-mode .cancel-btn {
+  border-color: #404040;
+}
+
+.dark-mode .cancel-btn:hover {
+  background: #404040;
+}
+
+/* Logout button */
+.logout-btn {
+  background: #ff9800;
+  border: 2px solid #ff9800;
+}
+
+.logout-btn:hover {
+  background: #f57c00;
+  border-color: #f57c00;
+  box-shadow: 0 5px 15px rgba(255, 152, 0, 0.4);
+}
+
+.logout-icon {
+  font-size: 3.5rem;
+  display: inline-block;
+  animation: wave 2s infinite;
+}
+
+@keyframes wave {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(15deg); }
+  75% { transform: rotate(-15deg); }
+}
+
+/* Dark mode */
+.dark-mode .logout-btn {
+  background: #f57c00;
+  border-color: #f57c00;
+}
+
+.dark-mode .logout-btn:hover {
+  background: #ff9800;
+  border-color: #ff9800;
+}
