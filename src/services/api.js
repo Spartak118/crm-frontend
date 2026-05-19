@@ -36,3 +36,7 @@ api.interceptors.response.use(
 );
 
 export { api };
+
+// Fetch all customers from the MySQL backend (UnschoolMe registrations)
+export const fetchApiCustomers = () =>
+  api.get('/customers').then((res) => res.data);

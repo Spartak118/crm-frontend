@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNotifications } from '../contexts/NotificationContext';
+import { fetchApiCustomers } from '../services/api';
 import ConfirmModal from '../components/ConfirmModal';
 import ReminderModal from '../components/ReminderModal';
 import ExportImport from '../components/ExportImport';
@@ -46,6 +47,46 @@ const Customers = () => {
   const [customers, setCustomers] = useState(() => {
     return userData?.customers || [];
   });
+
+  // API customers fetched from MySQL (UnschoolMe registrations)
+  const [apiCustomers, setApiCustomers] = useState([]);
+  const [apiLoading, setApiLoading] = useState(true);
+
+  // Snapshot of localStorage emails at mount — used once for dedup
+  const initialEmailsRef = useRef(
+    new Set((userData?.customers || []).map((c) => c.email?.toLowerCase()))
+  );
+
+  // Normalize a DB row (snake_case) into the CRM customer shape
+  const normalizeApiCustomer = (row) => ({
+    id: 'api_' + row.id,
+    name: [row.first_name, row.last_name].filter(Boolean).join(' ') || row.email || 'Unknown',
+    email: row.email || '',
+    phone: row.phone || '',
+    company: row.source || '',
+    status: 'Lead',
+    deals: 0,
+    lastContact: row.created_at ? new Date(row.created_at).toISOString().split('T')[0] : '',
+    notes: row.notes || '',
+    _source: 'unschoolme',
+  });
+
+  // Fetch once on mount — silently ignore errors so localStorage still works
+  useEffect(() => {
+    fetchApiCustomers()
+      .then((rows) => {
+        const localEmails = initialEmailsRef.current;
+        const normalized = rows
+          .map(normalizeApiCustomer)
+          .filter((c) => !localEmails.has(c.email?.toLowerCase()));
+        setApiCustomers(normalized);
+      })
+      .catch(() => {})
+      .finally(() => setApiLoading(false));
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Combined list: localStorage first, then API-only entries (no duplicate emails)
+  const mergedCustomers = [...customers, ...apiCustomers];
 
   const [searchTerm, setSearchTerm] = useState('');
   const [showModal, setShowModal] = useState(false);
@@ -96,7 +137,7 @@ const Customers = () => {
     });
   };
 
-  const filteredCustomers = customers.filter(customer =>
+  const filteredCustomers = mergedCustomers.filter(customer =>
     customer.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     customer.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     customer.company?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -153,7 +194,11 @@ const Customers = () => {
 
   const confirmDelete = () => {
     if (customerToDelete) {
-      setCustomers(customers.filter(c => c.id !== customerToDelete.id));
+      if (String(customerToDelete.id).startsWith('api_')) {
+        setApiCustomers(apiCustomers.filter(c => c.id !== customerToDelete.id));
+      } else {
+        setCustomers(customers.filter(c => c.id !== customerToDelete.id));
+      }
       setShowSuccessMessage(`Customer "${customerToDelete.name}" deleted successfully`);
       
       addNotification({
@@ -210,12 +255,15 @@ const Customers = () => {
     
     const dealAmount = parseMoneyInput(formData.deals);
     
-    if (editingCustomer) {
-      setCustomers(customers.map(c => 
-        c.id === editingCustomer.id 
-          ? { 
-              ...formData, 
-              id: c.id, 
+    const isApiCustomer = String(editingCustomer?.id).startsWith('api_');
+
+    if (editingCustomer && !isApiCustomer) {
+      // Edit existing localStorage customer
+      setCustomers(customers.map(c =>
+        c.id === editingCustomer.id
+          ? {
+              ...formData,
+              id: c.id,
               lastContact: new Date().toISOString().split('T')[0],
               deals: dealAmount
             }
@@ -223,6 +271,7 @@ const Customers = () => {
       ));
       handleEditSuccess();
     } else {
+      // New customer OR promoting an API customer into localStorage
       const newCustomer = {
         ...formData,
         id: customers.length > 0 ? Math.max(...customers.map(c => c.id)) + 1 : 1,
@@ -230,6 +279,10 @@ const Customers = () => {
         deals: dealAmount
       };
       setCustomers([...customers, newCustomer]);
+      if (isApiCustomer) {
+        // Remove from API list — it now lives in localStorage
+        setApiCustomers(apiCustomers.filter(c => c.id !== editingCustomer.id));
+      }
       handleAddSuccess();
     }
     
@@ -287,7 +340,12 @@ const Customers = () => {
         </div>
 
         <div className="table-container">
-          {customers.length === 0 ? (
+          {apiLoading && (
+            <p style={{ fontSize: '12px', color: '#888', marginBottom: '8px' }}>
+              Loading customers from database…
+            </p>
+          )}
+          {mergedCustomers.length === 0 && !apiLoading ? (
             <div className="empty-state">
               <p>No customers yet</p>
               <button className="btn-primary" onClick={openAddModal}>Add your first customer</button>
@@ -309,7 +367,24 @@ const Customers = () => {
               <tbody>
                 {filteredCustomers.map(customer => (
                   <tr key={customer.id}>
-                    <td>{customer.name}</td>
+                    <td>
+                      {customer.name}
+                      {customer._source === 'unschoolme' && (
+                        <span style={{
+                          marginLeft: '6px',
+                          fontSize: '10px',
+                          background: '#6366f1',
+                          color: '#fff',
+                          borderRadius: '4px',
+                          padding: '1px 5px',
+                          fontWeight: '600',
+                          verticalAlign: 'middle',
+                          whiteSpace: 'nowrap',
+                        }}>
+                          UnschoolMe
+                        </span>
+                      )}
+                    </td>
                     <td>{customer.email}</td>
                     <td>{customer.phone}</td>
                     <td>{customer.company}</td>
@@ -350,7 +425,13 @@ const Customers = () => {
         {showModal && (
           <div className="modal-overlay">
             <div className="modal">
-              <h2>{editingCustomer ? 'Edit Customer' : 'Add New Customer'}</h2>
+              <h2>
+                {editingCustomer
+                  ? String(editingCustomer.id).startsWith('api_')
+                    ? 'Import to CRM'
+                    : 'Edit Customer'
+                  : 'Add New Customer'}
+              </h2>
               <form onSubmit={handleSubmit}>
                 <div className="form-group">
                   <label>Name *</label>
@@ -425,7 +506,10 @@ const Customers = () => {
                     Cancel
                   </button>
                   <button type="submit" className="btn-primary">
-                    {editingCustomer ? 'Update' : 'Add'} Customer
+                    {editingCustomer
+                      ? String(editingCustomer.id).startsWith('api_') ? 'Import' : 'Update'
+                      : 'Add'}{' '}
+                    Customer
                   </button>
                 </div>
               </form>
