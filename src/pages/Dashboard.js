@@ -28,6 +28,23 @@ const Dashboard = () => {
   const { currentUser, userData } = useAuth();
   const [showCalendarModal, setShowCalendarModal] = useState(false);
   const [showNewsletterModal, setShowNewsletterModal] = useState(false);
+  const [unschoolSignups, setUnschoolSignups] = useState([]);
+  const [unschoolLoading, setUnschoolLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('https://crm-backend-flame.vercel.app/api/customers')
+      .then(r => r.json())
+      .then(data => {
+        const rows = Array.isArray(data) ? data : (data.customers || []);
+        const signups = rows
+          .filter(r => r.source === 'UnschoolMe')
+          .slice(-5)
+          .reverse();
+        setUnschoolSignups(signups);
+      })
+      .catch(() => {})
+      .finally(() => setUnschoolLoading(false));
+  }, []);
 
   // Загружаем клиентов из данных пользователя
   const [customers, setCustomers] = useState(() => {
@@ -226,6 +243,45 @@ const Dashboard = () => {
                 <span className="activity-time">{activity.time}</span>
               </div>
             ))}
+          </div>
+        )}
+      </div>
+
+      {/* Recent UnschoolMe Signups */}
+      <div className="dashboard-section">
+        <h2>Recent UnschoolMe Signups</h2>
+        {unschoolLoading ? (
+          <p className="empty-message">Loading…</p>
+        ) : unschoolSignups.length === 0 ? (
+          <p className="empty-message">No signups yet</p>
+        ) : (
+          <div className="table-container">
+            <table className="pipeline-table unschool-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Registered</th>
+                  <th>Source</th>
+                </tr>
+              </thead>
+              <tbody>
+                {unschoolSignups.map((row, i) => {
+                  const name = [row.first_name, row.last_name].filter(Boolean).join(' ') || row.email || 'Unknown';
+                  const date = row.created_at ? new Date(row.created_at).toLocaleDateString() : '—';
+                  return (
+                    <tr key={row.id || i}>
+                      <td className="stage-cell">{name}</td>
+                      <td>{row.email}</td>
+                      <td><span className="role-tag">{row.type || 'learner'}</span></td>
+                      <td>{date}</td>
+                      <td><span className="unschool-badge">UnschoolMe</span></td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         )}
       </div>
