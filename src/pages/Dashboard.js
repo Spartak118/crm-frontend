@@ -36,10 +36,7 @@ const Dashboard = () => {
       .then(r => r.json())
       .then(data => {
         const rows = Array.isArray(data) ? data : (data.customers || []);
-        const signups = rows
-          .filter(r => r.source === 'UnschoolMe')
-          .slice(-5)
-          .reverse();
+        const signups = rows.filter(r => r.source === 'UnschoolMe');
         setUnschoolSignups(signups);
       })
       .catch(() => {})
@@ -77,9 +74,12 @@ const Dashboard = () => {
     );
   }
 
+  // UnschoolMe customers all land in Lead with deals = 0
+  const unschoolCount = unschoolSignups.length;
+
   // Считаем клиентов по статусам
   const customersByStatus = {
-    Lead: customers.filter(c => c.status === 'Lead').length,
+    Lead: customers.filter(c => c.status === 'Lead').length + unschoolCount,
     Prospect: customers.filter(c => c.status === 'Prospect').length,
     Active: customers.filter(c => c.status === 'Active').length,
     VIP: customers.filter(c => c.status === 'VIP').length
@@ -127,7 +127,7 @@ const Dashboard = () => {
   ];
 
   // Данные для графиков
-  const totalCustomers = customers.length;
+  const totalCustomers = customers.length + unschoolCount;
   const totalDeals = pipelineStages.reduce((sum, s) => sum + s.deals.length, 0);
   const totalMoney = customers.reduce((sum, c) => sum + (parseFloat(c.deals) || 0), 0);
 
@@ -267,7 +267,7 @@ const Dashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {unschoolSignups.map((row, i) => {
+                {[...unschoolSignups].slice(-5).reverse().map((row, i) => {
                   const name = [row.first_name, row.last_name].filter(Boolean).join(' ') || row.email || 'Unknown';
                   const date = row.created_at ? new Date(row.created_at).toLocaleDateString() : '—';
                   return (
